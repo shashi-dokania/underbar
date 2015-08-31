@@ -535,14 +535,14 @@
       if(!calledAt || ((now - calledAt) > wait)){
         if(queued) {
           clearTimeout(queued);
-          queued = 0;
+          //queued = 0;
         }
         calledAt = Date.now();
         lastResult = func.apply(this, arguments);
       } 
       else if(!queued) {
         queued = setTimeout(nextCall, wait-(now-calledAt));
-        
+
       }
       return lastResult;
     };
