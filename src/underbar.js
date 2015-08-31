@@ -32,7 +32,13 @@
   // Return an array of the first n elements of an array. If n is undefined,
   // return just the first element.
   _.first = function(array, n) {
-    return n === undefined ? array[0] : array.slice(0, n);
+    if(n === undefined){
+      return array[0];
+    }
+    else {
+      return array.slice(0, n);
+    }
+    // return n === undefined ? array[0] : array.slice(0, n);
   };
 
   // Like first, but for the last elements. If n is undefined, return just the
@@ -99,13 +105,9 @@
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    var result = [];
-    _.each(collection, function(val){
-      if(!test(val)){
-        result.push(val);
-      }
+    return _.filter(collection, function(val){
+      return !test(val);
     })
-    return result;
   };
 
   // Produce a duplicate-free version of the array.
@@ -414,29 +416,18 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
-    _.each(collection, function(obj){
-      for(var key in obj){
-        iterator(key);
-      }
-    })
-
-    //if(typeof key === 'string'){
-    return collection.sort(function(a,b) {
-    // if (iterator(a) > iterator(b)){
-    //   return 1;
-    // }
-    // else if (iterator(a) < iterator(b)){
-    //   return -1;
-    // }
-    // else{
-    //   return 0;
-    // }
-      return (iterator(a) - iterator(b));
-    });
-  //}
-  // return collection.sort(function(a,b) {
-  //   return (iterator(a).length - iterator(b).length);
-  //   });
+    
+    if(typeof iterator === 'string'){
+      return collection.sort(function(a,b) {
+        return a[iterator] - b[iterator];
+      });
+    }
+    
+    //if iterator is a function
+      return collection.sort(function(a,b){
+       return (iterator(a) - iterator(b));
+     });
+    
   };
 
   // Zip together two or more arrays with elements of the same index
