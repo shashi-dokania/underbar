@@ -520,5 +520,33 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+    var calledAt = 0;
+    var queued = 0;
+    var lastResult;
+    
+    var nextCall = function() {
+      queued = 0;
+      calledAt = Date.now();
+      lastResult = func.apply(this, arguments);
+    };
+    
+    return function() {
+      var now = Date.now();
+      if(!calledAt || ((now - calledAt) > wait)){
+        if(queued) {
+          clearTimeout(queued);
+          queued = 0;
+        }
+        calledAt = Date.now();
+        lastResult = func.apply(this, arguments);
+      } 
+      else if(!queued) {
+        queued = setTimeout(nextCall, wait-(now-calledAt));
+        
+      }
+      return lastResult;
+    };
+
   };
+
 }());
