@@ -32,27 +32,13 @@
   // Return an array of the first n elements of an array. If n is undefined,
   // return just the first element.
   _.first = function(array, n) {
-    if(n === undefined){
-      return array[0];
-    }
-    else {
-      return array.slice(0, n);
-    }
-    // return n === undefined ? array[0] : array.slice(0, n);
+    return n === undefined ? array[0] : array.slice(0, n);
   };
 
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
-    if(n === undefined){
-      return array[array.length - 1];
-    }
-    else if(n === 0){
-      return array.slice(0, n);
-    }
-    else {
-      return array.slice(-n);
-    }
+    return n === undefined ? array.pop() : array.slice(array[array.length - 1 - n]);
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -61,13 +47,14 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
-    if(Array.isArray(collection)){
-      for(var i = 0; i < collection.length; i++){
+    
+    if(Array.isArray(collection)) {
+      for(var i = 0; i < collection.length; i++) {
         iterator(collection[i], i, collection);
       }
     }
     else {
-      for(var key in collection){
+      for(var key in collection) {
         iterator(collection[key], key, collection);
       }
     }
@@ -93,11 +80,11 @@
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
       var result = [];
-      _.each(collection, function(val){
-        if(test(val)){
+      _.each(collection, function(val) {
+        if(test(val)) {
           result.push(val);
         }
-      })
+      });
       return result;
   };
 
@@ -105,24 +92,25 @@
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    return _.filter(collection, function(val){
+    return _.filter(collection, function(val) {
       return !test(val);
-    })
+    });
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
     var result = [];
     var a = {};
-    _.each(array, function(val){
-      if(a[val] === undefined){
+
+    _.each(array, function(val) {
+      if(a[val] === undefined) {
           result.push(val);
           a[val] = 1;
         }
         else {
           a[val]++;
         }
-    })
+    });
     return result;
   };
 
@@ -133,9 +121,10 @@
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var result = [];
-    _.each(collection, function(val, index){
+
+    _.each(collection, function(val, index) {
       result.push(iterator(val, index, collection));
-    })
+    });
     return result;
   };
 
@@ -152,7 +141,7 @@
     // TIP: map is really handy when you want to transform an array of
     // values into a new array of values. _.pluck() is solved for you
     // as an example of this.
-    return _.map(collection, function(item){
+    return _.map(collection, function(item) {
       return item[key];
     });
   };
@@ -180,20 +169,20 @@
   _.reduce = function(collection, iterator, accumulator) {
     // if accumulator is not provided
     var flag = 0; 
-    if(arguments.length < 3){
+    if(arguments.length < 3) {
       accumulator = collection[0];
       flag = 1;
     }
-    if(flag === 1){
-      for(var i = 1; i < collection.length; i++){
+    if(flag === 1) {
+      for(var i = 1; i < collection.length; i++) {
         accumulator = iterator(accumulator, collection[i]);
       }
     }
     // if accumulator is provided
     else {
-      _.each(collection, function(current){
+      _.each(collection, function(current) {
         accumulator = iterator(accumulator, current);
-      })
+      });
     }
     return accumulator;
   };
@@ -213,17 +202,19 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    
     if(arguments.length < 2) {
-      return _.reduce(collection, function(a, c){
+      return _.reduce(collection, function(a, c) {
         return a && c;
-      }, true)
+      }, true);
     }
-    return _.reduce(collection, function(a, c){
+
+    return _.reduce(collection, function(a, c) {
       if(iterator(c)) {
         return a;
       }
       return false;
-    }, true)
+    }, true);
     // TIP: Try re-using reduce() here.
   };
 
@@ -231,22 +222,23 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-    if(collection.length <= 0){
+    if(collection.length <= 0) {
       return false;
     }
+
     if(arguments.length < 2) {
       var condition = false;
-      _.each(collection, function(val){
-        if(val){
+      _.each(collection, function(val) {
+        if(val) {
           condition = true;
         }
       })
       return condition;
     }
     
-      return !(_.every(collection, function(val){
+      return !(_.every(collection, function(val) {
         return !iterator(val);
-      }))
+      }));
   };
 
 
@@ -269,9 +261,10 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
-    for(var i = 1; i < arguments.length; i++){
-        for(var key in arguments[i]){
-            obj[key] = arguments[i][key]
+    
+    for(var i = 1; i < arguments.length; i++) {
+        for(var key in arguments[i]) {
+            obj[key] = arguments[i][key];
         }
     }
     return obj;
@@ -280,12 +273,13 @@
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
-    for(var i = 1; i < arguments.length; i++){
-        for(var key in arguments[i]){
-          if(obj[key] === undefined){
-            obj[key] = arguments[i][key]; 
-          }
+    
+    for(var i = 1; i < arguments.length; i++) {
+      for(var key in arguments[i]) {
+        if(obj[key] === undefined) {
+          obj[key] = arguments[i][key]; 
         }
+      }
     }
     return obj;
   };
@@ -350,13 +344,16 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+      
       if(arguments.length > 2){
       var args = Array.prototype.slice.call(arguments, 2);
     }
-    var delayCall = function(){
+    
+    var delayCall = function() {
       return func.apply(this, args);
     }   
-    setTimeout(delayCall,wait)
+    
+    setTimeout(delayCall, wait);
   };
 
 
@@ -372,20 +369,24 @@
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
     var array1 = [];
-    _.each(array, function(val){
+    
+    _.each(array, function(val) {
       array1.push(val);
-    })
+    });
+
     var newArray = [];
     var result = [];
-    while(array1.length >= 1){
+   
+    while(array1.length >= 1) {
       var x = array1.splice(Math.floor(Math.random() * array1.length), 1);
       newArray.push(x);
     }
-    _.each(newArray, function(arr){
-      _.each(arr, function(val){
+    
+    _.each(newArray, function(arr) {
+      _.each(arr, function(val) {
         result.push(val);
-      })
-    })
+      });
+    });
       return result;
   };
 
@@ -402,13 +403,13 @@
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
     //invoke when provided a method name
-        if(typeof functionOrKey === 'string'){
-          return _.map(collection, function(val){
+        if(typeof functionOrKey === 'string') {
+          return _.map(collection, function(val) {
             return val[functionOrKey](args);
           });
         }
         //invoke when provided a function reference
-        return _.map(collection, function(val){
+        return _.map(collection, function(val) {
           return functionOrKey.apply(val, args);
         });
   };
@@ -440,15 +441,15 @@
   _.zip = function() {
     var args = Array.prototype.slice.call(arguments);
     var longest = _.reduce(args, function(a,b){
-        if(a.length > b.length){
+        if(a.length > b.length) {
             return a;
         }
             return b;
      }, []);
-     return _.map(longest, function(val,i){
-        return _.map(args, function(array){
+     return _.map(longest, function(val,i) {
+        return _.map(args, function(array) {
             return array[i];
-        })     
+        });     
      });
   };
 
@@ -464,7 +465,7 @@
         } else {
             result.push(val);
         }
-      })
+      });
     return result;
   };
 
@@ -479,8 +480,8 @@
         if(!(_.contains(arr, val))) {
          delete firstArray[i];
        }
-     })
-    }) 
+     });
+    }); 
     return firstArray; 
   };
 
@@ -488,14 +489,15 @@
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
     var args = Array.prototype.slice.call(arguments, 1);
+    
     _.each(args, function(arr){
       _.each(array, function(val, i){
         var isThere = _.contains(arr, val);
-        if(isThere){
+        if(isThere) {
           array.splice(i, 1);
         }
-      })
-    })
+      });
+    });
     return array;
   };
 
