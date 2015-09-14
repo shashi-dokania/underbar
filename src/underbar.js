@@ -214,15 +214,15 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     if(arguments.length < 2) {
-          return _.reduce(collection, function(a, c){
-            return a && c;
-        }, true)
+      return _.reduce(collection, function(a, c){
+        return a && c;
+      }, true)
     }
     return _.reduce(collection, function(a, c){
-        if(iterator(c)) {
-          return a;
-        }
-        return false;
+      if(iterator(c)) {
+        return a;
+      }
+      return false;
     }, true)
     // TIP: Try re-using reduce() here.
   };
@@ -352,9 +352,11 @@
   _.delay = function(func, wait) {
       if(arguments.length > 2){
       var args = Array.prototype.slice.call(arguments, 2);
-      func.apply(this, args);
+    }
+    var delayCall = function(){
+      return func.apply(this, args);
     }   
-    setTimeout(func,wait)
+    setTimeout(delayCall,wait)
   };
 
 
@@ -469,49 +471,32 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
-    var map = {};
-    var result = [];
-    for(var i = 0; i < arguments.length; i++){
-      for(var j = 0; j < arguments[i].length; j++){
-        if(map[arguments[i][j]] === undefined){
-          map[arguments[i][j]] = 1;
-        }
-        else{
-          map[arguments[i][j]]++;
-        }
-      }
-    }
-    for(var key in map){
-      if(map[key] > 1){
-        result.push(key);
-      }
-    }
-      return result;
+    var args = Array.prototype.slice.call(arguments);
+    var firstArray = args.shift();
+
+    _.each(args, function(arr){
+      _.each(firstArray, function(val, i){
+        if(!(_.contains(arr, val))) {
+         delete firstArray[i];
+       }
+     })
+    }) 
+    return firstArray; 
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
-    var map = {};
-    var result = [];
-    for(var i = 0; i < arguments.length; i++){
-      for(var j = 0; j < arguments[i].length; j++){
-        if(map[arguments[i][j]] === undefined){
-          map[arguments[i][j]] = 1;
+    var args = Array.prototype.slice.call(arguments, 1);
+    _.each(args, function(arr){
+      _.each(array, function(val, i){
+        var isThere = _.contains(arr, val);
+        if(isThere){
+          array.splice(i, 1);
         }
-        else{
-          map[arguments[i][j]]++;
-        }
-      }
-    }
-    _.each(array, function(val){
-      for(var key in map){
-        if(+key === val && map[key] === 1){
-          result.push(+key);
-        }
-      }
+      })
     })
-    return result;
+    return array;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
@@ -527,7 +512,7 @@
     var nextCall = function() {
       queued = 0;
       calledAt = Date.now();
-      lastResult = func.apply(this, arguments);
+      lastResult = func.apply(null, arguments);
     };
     
     return function() {
@@ -538,7 +523,7 @@
           //queued = 0;
         }
         calledAt = Date.now();
-        lastResult = func.apply(this, arguments);
+        lastResult = func.apply(null, arguments);
       } 
       else if(!queued) {
         queued = setTimeout(nextCall, wait-(now-calledAt));
